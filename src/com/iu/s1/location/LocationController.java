@@ -51,8 +51,8 @@ public class LocationController {
 					
 					
 				}else {
-				check=false;
-					
+					check=false;
+					break;
 				}
 				
 			}//while문 종료

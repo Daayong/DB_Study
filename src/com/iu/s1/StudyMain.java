@@ -26,11 +26,6 @@ public class StudyMain {
 		
 		
 		
-		
-		
-		
-		
-		
 		/*
 		locationDTO.setLocation_id(1);
 		

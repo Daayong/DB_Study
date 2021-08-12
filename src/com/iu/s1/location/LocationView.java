@@ -8,13 +8,13 @@ public class LocationView {
 	public void view(ArrayList<LocationDTO> ar) {
 		
 		for(int i=0; i<ar.size(); i++) {
-			
 			this.view(ar.get(i));
-			
-			
 		}
+	
+	}
 		
-		
+	public void view(String msg) {	
+		System.out.println(msg);
 	}
 	
 	public void view(LocationDTO locationDTO) {
@@ -25,9 +25,6 @@ public class LocationView {
 		System.out.println(locationDTO.getCity());
 		System.out.println(locationDTO.getState_province());
 		System.out.println(locationDTO.getCountry_id());
-		
-		
-		
 		
 	}
 
