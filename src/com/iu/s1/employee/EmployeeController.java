@@ -21,8 +21,8 @@ public class EmployeeController {
 	
 	
 		
-		Emp_DepartDTO emp_DepartDTO = employeeDAO.getJoin(101); 
-		employeeView.view(employeeDAO);
+	//	Emp_DepartDTO emp_DepartDTO = employeeDAO.getJoin(101); 
+	//	employeeView.view(employeeDAO);
 		
 		
 	}

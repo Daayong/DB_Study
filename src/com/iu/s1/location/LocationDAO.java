@@ -18,26 +18,22 @@ public class LocationDAO {
 		dbConnect = new DBConnect();
 	}
 	
-	
-	public LocationDTO getLocation(int employee_id) {
+	//List
+	public ArrayList<LocationDTO> getList() {
 		Connection con = null;
 		PreparedStatement st = null;
-		ResultSet rs = null; 
-		LocationDTO locationDTO = null;
+		ResultSet rs = null;
+		LocationDTO locationDTO=null;
+		ArrayList<LocationDTO> ar = new ArrayList<LocationDTO>();
 		try {
-			con = dbConnect.getConnect();
-		
-			String sql ="SELECT * \r\n"
-					+ "FROM LOCATIONS\r\n"
-					+ "WHERE LOCATION_ID=(SELECT LOCATION_ID FROM DEPARTMENTS WHERE DEPARTMENT_ID="
-					+ "(SELECT DEPARTMENT_ID FROM EMPLOYEES WHERE EMPLOYEE_ID=?));\r\n";
-
-			st=con.prepareStatement(sql);
-			st.setInt(1, employee_id);
+			con=dbConnect.getConnect();
+			String sql="SELECT * FROM LOCATIONS ORDER BY LOCATION_ID ASC";
 			
+			st=con.prepareStatement(sql);
 			rs=st.executeQuery();
 			
-			if(rs.next()) {
+			while(rs.next()) {
+				
 				locationDTO = new LocationDTO();
 				locationDTO.setLocation_id(rs.getInt("location_id"));
 				locationDTO.setStreet_address(rs.getString("street_address"));
@@ -45,208 +41,59 @@ public class LocationDAO {
 				locationDTO.setCity(rs.getString("city"));
 				locationDTO.setState_province(rs.getString("state_province"));
 				locationDTO.setCountry_id(rs.getString("country_id"));
+				ar.add(locationDTO);
 			}
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				st.close();
-				con.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-		}
-			return locationDTO;
-	}
-	
-	//getCount
-	//location의 주소 갯수를 리턴하고 출력
-	public int getCount() {
-		Connection con = null;
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		
-		try {
-			con = dbConnect.getConnect();
-			String sql ="SELECT COUNT(LOCATION_ID) FROM LOCATIONS";
-			st = con.prepareStatement(sql);
-			rs = st.executeQuery();
-			
-			rs.next();
-			
-			count = rs.getInt(1);
-			
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-				st.close();
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			dbConnect.disConnect(rs, st, con);
 		}
 		
-		return count;
-	}
-	
-	//getSearch
-	//주소의 일부를 받아서 검색 찾은 것들을 출력
-	public ArrayList<LocationDTO> getSearch(String search) {
-		
-		Connection con=null;
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		ArrayList<LocationDTO> ar = new ArrayList<LocationDTO>();
-		//1. Connection
-		try {
-			con = dbConnect.getConnect();
-			
-		//2.SQl문 생성
-			//String sql = "SELECT * FROM LOCATIONS WHERE STREET_ADDRESS LIKE '%'||?||'%'";
-			String sql = "SELECT * FROM LOCATIONS WHERE STREET_ADDRESS LIKE ?"; //%Vi%
-		//3. 미리 전송
-			st = con.prepareStatement(sql);
-		
-		//4. ? 설정
-			st.setString(1, "%"+search+"%");
-		
-		//5. 최종 전송 후 결과 처리
-			rs = st.executeQuery();
-			
-			while(rs.next()) {
-				LocationDTO locationDTO = new LocationDTO();
-				locationDTO.setLocation_id(rs.getInt("location_id"));
-				locationDTO.setStreet_address(rs.getString("street_address"));
-				locationDTO.setPostal_code(rs.getString("postal_code"));
-				locationDTO.setCity(rs.getString("city"));
-				locationDTO.setState_province(rs.getString("state_province"));
-				locationDTO.setCountry_id(rs.getString("country_id"));
-				ar.add(locationDTO);
-			}
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-				st.close();
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		
 		return ar;
 		
 	}
 	
-	
-	
-	
-	//Location Table에서 id와 일치하는 정보를 조회
-	public LocationDTO getOne(int location_id) {
-		
-		//ADD-DTO Branch
-		
+	//one
+	public LocationDTO getOne(LocationDTO locationDTO) {
 		Connection con = null;
-		PreparedStatement st=null;
+		PreparedStatement st = null;
 		ResultSet rs = null;
-		LocationDTO locationDTO=null;
+		LocationDTO result=null;
 		try {
-			con = dbConnect.getConnect();
+			con= dbConnect.getConnect();
 			
-			String sql="SELECT * FROM LOCATIONS WHERE LOCATION_ID=?";
+			String sql = "SELECT * FROM LOCATIONS WHERE LOCATION_ID=?";
 			
-			st = con.prepareStatement(sql);
+			st=con.prepareStatement(sql);
+			st.setInt(1, locationDTO.getLocation_id());
 			
-			st.setInt(1, location_id);
+			rs=st.executeQuery();
 			
-			rs = st.executeQuery();
 			if(rs.next()) {
-				locationDTO = new LocationDTO();
-				locationDTO.setLocation_id(rs.getInt("location_id"));
-				locationDTO.setStreet_address(rs.getString("street_address"));
-				locationDTO.setPostal_code(rs.getString("postal_code"));
-				locationDTO.setCity(rs.getString("city"));
-				locationDTO.setState_province(rs.getString("state_province"));
-				locationDTO.setCountry_id(rs.getString("country_id"));
+				result = new LocationDTO();
+				System.out.println(rs.getString("street_address"));
+				result.setLocation_id(rs.getInt("location_id"));
+				result.setStreet_address(rs.getString("street_address"));
+				result.setPostal_code(rs.getString("postal_code"));
+				result.setCity(rs.getString("city"));
+				result.setState_province(rs.getString("state_province"));
+				result.setCountry_id(rs.getString("country_id"));
+				
 			}
 			
-			
+		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			dbConnect.disConnect(rs, st, con);
 		}
 		
-		
-		return locationDTO;
-	}
+	 
+	return result;
 	
-	
-	public ArrayList<LocationDTO> getList() {
-		//LOCATIONS Table을 조회해서 출력
-		
-		//2. Driver를 메모리에 로딩
-		Connection con = null;
-		PreparedStatement st=null;
-		ResultSet rs=null;
-		ArrayList<LocationDTO> ar = new ArrayList<LocationDTO>();
-		try {
-			
-		
-		//3. DB Connection
-			con = dbConnect.getConnect();
-			System.out.println("DB 연결성공");
-			
-		//4. SQL문 생성
-			String sql ="SELECT * FROM Locations";
-		
-		//5. 미리 전송
-			st = con.prepareStatement(sql);
-			
-		//6. 최종 전송 후 결과 처리
-			rs = st.executeQuery();
-			
-			while(rs.next()) {
-				LocationDTO locationDTO = new LocationDTO();
-				locationDTO.setLocation_id(rs.getInt("location_id"));
-				locationDTO.setStreet_address(rs.getString("street_address"));
-				locationDTO.setPostal_code(rs.getString("postal_code"));
-				locationDTO.setCity(rs.getString("city"));
-				locationDTO.setState_province(rs.getString("state_province"));
-				locationDTO.setCountry_id(rs.getString("country_id"));
-				ar.add(locationDTO);
-			}
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				st.close();
-				rs.close();
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-		return ar;
 	}
-
 }
