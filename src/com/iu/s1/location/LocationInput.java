@@ -12,9 +12,6 @@ public class LocationInput {
 		int location_id = sc.nextInt();
 		locationDTO.setLocation_id(location_id);
 		
-		
-		
-		
 		return locationDTO;
 		
 		

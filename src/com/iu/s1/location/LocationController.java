@@ -24,7 +24,11 @@ public class LocationController {
 			while(check) {
 				System.out.println("1.전체 정보 출력");
 				System.out.println("2.1개 정보 출력");
-				System.out.println("3.나가기");
+				System.out.println("3.지역 정보 추가");
+				//삭제시 오류 발생 
+				//직접 추가한 지역을 삭제 
+				System.out.println("4.지역 정보 삭제");
+				System.out.println("5.나가기");
 				
 				int select = sc.nextInt();	
 				
@@ -48,6 +52,15 @@ public class LocationController {
 					}else {
 						locationView.view("없는 ID 입니다");
 					}
+					
+				}else if(select==3){
+					
+					
+					
+					
+				}else if(select==4){
+					
+					
 					
 					
 				}else {
